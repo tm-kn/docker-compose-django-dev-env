@@ -4,7 +4,7 @@ This code is a try to set up a viable local environment that can be used for
 development od Django apps using Docker Compose.
 
 
-* `dc.sh` is a call to `docker-compose`.
+* `dev_dc.sh` is a call to our local `docker-compose`.
 * `dev_run.sh` builds and runs the environment. Subsequent build should use cache.
 * `dev_static.sh` installs front-end dependencies and builds the assets.
 * `dev_static.sh watch` runs watch command on Yarn.
