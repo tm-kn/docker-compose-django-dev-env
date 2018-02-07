@@ -1,0 +1,10 @@
+## Build Python app
+FROM python:3.6-stretch
+
+## Set app directory
+WORKDIR /app
+ENV PYTHONPATH /app
+
+## Copy requirements
+COPY requirements.txt /requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt

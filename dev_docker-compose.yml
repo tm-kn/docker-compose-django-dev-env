@@ -1,0 +1,48 @@
+version: '2'
+
+services:
+  db:
+    restart: always
+    image: postgres
+    logging:
+      driver: "none"
+    volumes:
+      - ./docker-dev/data/postgres:/var/lib/postgresql/data/
+  elasticsearch:
+    restart: always
+    image: elasticsearch:5.3
+    logging:
+      driver: "none"
+    volumes:
+      - ./docker-dev/data/elasticsearch:/usr/share/elasticsearch/data/
+  web:
+    restart: always
+    build:
+      context: .
+      dockerfile: dev_Dockerfile-web
+    environment:
+      - DATABASE_URL=postgres://postgres@db:5432/postgres
+      - SECRET_KEY=development-secret-key
+      - DJANGO_SETTINGS_MODULE=$APP_NAME.settings.dev
+      - ELASTICSEARCH_URL=http://elasticsearch:9200/
+      - PYTHONPATH=/app
+      - STATIC_COMPILED_DIR=/static_compiled
+    command: "django-admin runserver 0.0.0.0:8000"
+    volumes:
+      - ./:/app
+      - static_compiled:/static_compiled
+    ports:
+      - "8000:8000"
+    depends_on:
+      - static
+      - db
+      - elasticsearch
+  static:
+    build:
+     context: .
+     dockerfile: dev_Dockerfile-static
+    volumes:
+     - ./$APP_NAME/static_src/:/static_src
+     - static_compiled:/static_compiled
+volumes:
+  static_compiled:
